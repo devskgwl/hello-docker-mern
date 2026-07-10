@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # --- DATABASE SUBSYSTEM ---
+  mongodb:
+    image: mongo:6.0
+    container_name: hello_mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_production_data:/data/db
+    networks:
+      - mern_orchestration_network
+    restart: always
+
+  # --- BACKEND APPLICATION ENGINE ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hello_backend_container
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/hello_docker_db
+      - PORT=5000
+    depends_on:
+      - mongodb
+    networks:
+      - mern_orchestration_network
+    restart: always
+
+  # --- FRONTEND INTERFACE ENGINE ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hello_frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mern_orchestration_network
+    restart: always
+
+# --- NETWORK AND VOLUME DEFINITIONS ---
+networks:
+  mern_orchestration_network:
+    driver: bridge
+
+volumes:
+  mongo_production_data:
+    driver: local
