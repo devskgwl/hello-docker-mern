@@ -5,6 +5,33 @@ function App() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // const handleProceed = async (e) => {
+  //   e.preventDefault();
+  //   if (!name.trim()) return alert("Please enter your name! ✍️");
+    
+  //   setLoading(true);
+  //   try {
+  //     // HTTP POST request to the local Express backend engine running on port 5000
+  //     const res = await fetch('http://localhost:5000/api/greet', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ name })
+  //     });
+  //     const data = await res.json();
+  //     setResponse(data);
+  //   } catch (error) {
+  //     console.error("Backend connection failed, triggering local fallback simulation:", error);
+  //     // Fallback object to ensure UI render stability during offline development
+  //     setResponse({
+  //       greeting: `Welcome, ${name}! 👋`,
+  //       serverTime: new Date().toLocaleTimeString(),
+  //       ip: "127.0.0.1 (Local Dev Mode)",
+  //       location: "Bhopal, MP 📍"
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+
   const handleProceed = async (e) => {
     e.preventDefault();
     if (!name.trim()) return alert("Please enter your name! ✍️");
@@ -19,6 +46,7 @@ function App() {
       });
       const data = await res.json();
       setResponse(data);
+      setName(''); // ✨ MAGIC LINE: Clears the input field after a successful state commit
     } catch (error) {
       console.error("Backend connection failed, triggering local fallback simulation:", error);
       // Fallback object to ensure UI render stability during offline development
@@ -28,6 +56,7 @@ function App() {
         ip: "127.0.0.1 (Local Dev Mode)",
         location: "Bhopal, MP 📍"
       });
+      setName(''); // ✨ MAGIC LINE ALSO HERE: Clears the input field even in fallback mode
     } finally {
       setLoading(false);
     }
